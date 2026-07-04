@@ -1,0 +1,113 @@
+.tile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #fff8f0 0%, #f5e6d3 100%);
+  border-radius: 6px;
+  box-shadow:
+    0 2px 4px rgba(139, 90, 43, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -2px 0 rgba(139, 90, 43, 0.15);
+  border: 1px solid #d4b896;
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+  user-select: none;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.tileFree {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.tileFree:hover {
+  transform: scale(1.08);
+  box-shadow:
+    0 4px 8px rgba(139, 90, 43, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 12px rgba(255, 215, 0, 0.3);
+  z-index: 1000 !important;
+}
+
+.tileFree:active {
+  transform: scale(0.95);
+  transition: transform 0.05s ease;
+}
+
+.tileLocked {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.tileOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(60, 40, 20, 0.35) 0%,
+    rgba(80, 50, 25, 0.25) 50%,
+    rgba(60, 40, 20, 0.35) 100%
+  );
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.tileText {
+  font-size: calc(var(--tile-width) * 0.55);
+  font-weight: 700;
+  font-family: 'KaiTi', 'STKaiti', serif;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  line-height: 1;
+}
+
+.tileHinted {
+  animation: hintPulse 0.8s ease-in-out infinite;
+  border-color: #ffd700;
+  box-shadow:
+    0 0 12px rgba(255, 215, 0, 0.7),
+    0 2px 4px rgba(139, 90, 43, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+@keyframes hintPulse {
+  0%,
+  100% {
+    border-color: #ffd700;
+    box-shadow:
+      0 0 12px rgba(255, 215, 0, 0.5),
+      0 2px 4px rgba(139, 90, 43, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    border-color: #ff9500;
+    box-shadow:
+      0 0 20px rgba(255, 165, 0, 0.8),
+      0 2px 6px rgba(139, 90, 43, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+}
+
+.tileRemoving {
+  animation: tileRemove 0.3s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes tileRemove {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

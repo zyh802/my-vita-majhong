@@ -1,0 +1,225 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100dvh;
+  padding-top: calc(60px + var(--safe-top));
+  padding-bottom: var(--safe-bottom);
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* 深色木质纹理 - CSS 渐变模拟 */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.05) 2px,
+      rgba(0, 0, 0, 0.05) 4px
+    ),
+    linear-gradient(
+      180deg,
+      #1a0f0a 0%,
+      #2d1f14 40%,
+      #1a0f0a 100%
+    );
+}
+
+/* 竹帘效果 - 顶部横条纹理 */
+.bamboo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #5C2E0E 0px,
+      #8B4513 3px,
+      #A0522D 5px,
+      #8B4513 7px,
+      #5C2E0E 10px,
+      transparent 10px,
+      transparent 12px
+    );
+  border-bottom: 2px solid var(--color-accent);
+  z-index: 1;
+}
+
+/* 铜钱装饰图案 */
+.coinDecor {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid var(--color-accent);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  animation: float 3s ease-in-out infinite;
+  background: radial-gradient(
+    circle,
+    rgba(212, 160, 23, 0.1) 0%,
+    transparent 70%
+  );
+}
+
+.coinDecor::before {
+  content: '';
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--color-accent);
+  border-radius: 2px;
+  position: absolute;
+}
+
+.coinDecor::after {
+  content: '🀄';
+  font-size: 48px;
+  position: absolute;
+  opacity: 0;
+}
+
+.coinIcon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+/* 标题 */
+.title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--color-accent);
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(212, 160, 23, 0.3);
+  margin-bottom: 8px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--color-primary-light);
+  letter-spacing: 6px;
+  margin-bottom: 40px;
+  opacity: 0.8;
+}
+
+/* 开始游戏按钮 */
+.startBtn {
+  width: 220px;
+  height: 56px;
+  border-radius: var(--radius-xl);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--color-text-dark);
+  background: linear-gradient(
+    180deg,
+    var(--color-accent-light) 0%,
+    var(--color-accent) 100%
+  );
+  box-shadow:
+    0 4px 12px rgba(212, 160, 23, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  animation: bounceIn 0.6s ease-out 0.3s both;
+}
+
+.startBtn:active {
+  transform: scale(0.95);
+  box-shadow:
+    0 2px 6px rgba(212, 160, 23, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 进度文字 */
+.progress {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--color-text);
+  opacity: 0.6;
+  animation: fadeIn 0.8s ease-out 0.5s both;
+}
+
+/* 关卡选择网格 */
+.levelGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  padding: 0 16px;
+  margin-top: 20px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.8s ease-out 0.6s both;
+}
+
+.levelBtn {
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.levelBtn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.levelUnlocked {
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-light) 0%,
+    rgba(139, 69, 19, 0.3) 100%
+  );
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.levelLocked {
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.25);
+  cursor: default;
+}
+
+.levelNumber {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.levelStars {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--color-accent-light);
+  margin-top: 2px;
+}
+
+.lockIcon {
+  font-size: 12px;
+  position: absolute;
+  bottom: 4px;
+}
+
+/* 底部装饰线 */
+.bottomDecor {
+  width: 100%;
+  height: 4px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-accent) 50%,
+    transparent 100%
+  );
+  margin-top: auto;
+}
