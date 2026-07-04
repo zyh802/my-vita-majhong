@@ -46,6 +46,28 @@
   animation: scaleIn 0.5s ease-out 0.3s both;
 }
 
+/* 评分详情 */
+.ratingWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.5s ease-out 0.35s both;
+}
+
+.ratingScore {
+  font-size: 14px;
+  color: var(--color-accent-light);
+  font-weight: 600;
+}
+
+.ratingBonus {
+  font-size: 12px;
+  color: var(--color-success);
+  background: rgba(76, 175, 80, 0.15);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
 /* 统计数据区域 */
 .stats {
   display: flex;

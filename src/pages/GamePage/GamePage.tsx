@@ -1,13 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import { LEVELS } from '../../constants/levels';
 import { updateLevelProgress } from '../../utils/storage';
+import { calculateStars } from '../../utils/starRating';
 import { useTimer } from '../../hooks/useTimer';
 import ScoreBar from '../../components/ScoreBar/ScoreBar';
 import TileBoard from '../../components/TileBoard/TileBoard';
 import SlotBar from '../../components/SlotBar/SlotBar';
 import ToolBar from '../../components/ToolBar/ToolBar';
+import LevelModal from '../../components/LevelModal/LevelModal';
 import styles from './GamePage.module.css';
 
 export default function GamePage() {
@@ -15,6 +17,7 @@ export default function GamePage() {
   const navigate = useNavigate();
   const { state, startLevel, pickTile, useHint, useShuffle, useUndo, restartLevel, tickTimer } = useGame();
 
+  const [showLevelModal, setShowLevelModal] = useState(false);
   const levelIndex = Number(levelId) - 1;
 
   // 格式化时间
@@ -37,8 +40,11 @@ export default function GamePage() {
   // 监听游戏结束
   useEffect(() => {
     if (state.status === 'won') {
-      // 保存进度
-      const stars = state.score >= 800 ? 3 : state.score >= 500 ? 2 : 1;
+      const tileCount = state.levelData?.tileCount || 0;
+      const { stars } = calculateStars({
+        score: state.score,
+        pairCount: tileCount / 2,
+      });
       updateLevelProgress(state.currentLevel, {
         completed: true,
         stars,
@@ -51,8 +57,8 @@ export default function GamePage() {
           won: 'true',
           score: String(state.score),
           time: String(state.elapsedTime),
-          matches: String(state.matchCount),
           maxCombo: String(state.maxCombo),
+          tileCount: String(tileCount),
         });
         navigate(`/result/${levelId}?${params.toString()}`);
       }, 800);
@@ -60,13 +66,14 @@ export default function GamePage() {
     }
 
     if (state.status === 'lost') {
+      const lostTileCount = state.levelData?.tileCount || 0;
       const timer = setTimeout(() => {
         const params = new URLSearchParams({
           won: 'false',
           score: String(state.score),
           time: String(state.elapsedTime),
-          matches: String(state.matchCount),
           maxCombo: String(state.maxCombo),
+          tileCount: String(lostTileCount),
         });
         navigate(`/result/${levelId}?${params.toString()}`);
       }, 800);
@@ -93,6 +100,9 @@ export default function GamePage() {
         <button className={styles.restartBtn} onClick={restartLevel} title="重新开始">
           ↻
         </button>
+        <button className={styles.menuBtn} onClick={() => setShowLevelModal(true)} title="关卡选择">
+          ☰
+        </button>
       </div>
 
       {/* 棋盘 */}
@@ -116,6 +126,9 @@ export default function GamePage() {
           onUndo={useUndo}
         />
       </div>
+
+      {/* 关卡选择弹窗 */}
+      <LevelModal visible={showLevelModal} onClose={() => setShowLevelModal(false)} />
     </div>
   );
 }

@@ -82,6 +82,26 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
+.menuBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.menuBtn:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 /* 棋盘区域 */
 .boardArea {
   flex: 1;

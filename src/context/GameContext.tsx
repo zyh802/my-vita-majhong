@@ -25,6 +25,7 @@ const initialState: GameState = {
   isTimerRunning: false,
   status: 'idle',
   hintTileUid: null,
+  toolAssisted: false,
 };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -80,17 +81,22 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
       if (result.matched) {
         // Match found
-        const now = Date.now();
-        if (now - state.lastMatchTime <= COMBO_WINDOW && state.lastMatchTime > 0) {
-          newComboCount = state.comboCount + 1;
+        if (state.toolAssisted) {
+          // 道具辅助的匹配不加分，连击重置
+          newComboCount = 0;
+          newMatchCount += 1;
         } else {
-          newComboCount = 1;
+          const now = Date.now();
+          if (now - state.lastMatchTime <= COMBO_WINDOW && state.lastMatchTime > 0) {
+            newComboCount = state.comboCount + 1;
+          } else {
+            newComboCount = 1;
+          }
+          newScore += 100 * newComboCount;
+          newMatchCount += 1;
+          newMaxCombo = Math.max(state.maxCombo, newComboCount);
+          newLastMatchTime = now;
         }
-
-        newScore += 100 * newComboCount;
-        newMatchCount += 1;
-        newMaxCombo = Math.max(state.maxCombo, newComboCount);
-        newLastMatchTime = now;
 
         // Check win: board cleared and slot cleared
         if (isAllCleared(newTiles) && result.updatedSlots.length === 0) {
@@ -117,6 +123,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         status: newStatus,
         isTimerRunning: newStatus === 'playing',
         hintTileUid: null,
+        toolAssisted: result.matched ? false : state.toolAssisted,
       };
     }
 
@@ -132,6 +139,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         hintRemaining: state.hintRemaining - 1,
         hintTileUid: hintTile.uid,
+        toolAssisted: true,
       };
     }
 
@@ -146,6 +154,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         tiles: recalculatedTiles,
         shuffleRemaining: state.shuffleRemaining - 1,
         hintTileUid: null,
+        toolAssisted: true,
       };
     }
 
@@ -168,6 +177,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         undoRemaining: state.undoRemaining - 1,
         comboCount: 0,
         hintTileUid: null,
+        toolAssisted: true,
       };
     }
 

@@ -1,5 +1,6 @@
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { LEVELS } from '../../constants/levels';
+import { calculateStars } from '../../utils/starRating';
 import StarRating from '../../components/StarRating/StarRating';
 import styles from './ResultPage.module.css';
 
@@ -17,16 +18,17 @@ export default function ResultPage() {
   const won = searchParams.get('won') === 'true';
   const score = Number(searchParams.get('score') || 0);
   const time = Number(searchParams.get('time') || 0);
-  const matches = Number(searchParams.get('matches') || 0);
   const maxCombo = Number(searchParams.get('maxCombo') || 0);
+  const tileCount = Number(searchParams.get('tileCount') || 0);
 
   const levelIndex = Number(levelId) - 1;
   const hasNextLevel = levelIndex + 1 < LEVELS.length;
 
-  // 星级计算：基于分数百分比（假定满分 1000）
-  const maxScore = 1000;
-  const ratio = score / maxScore;
-  const stars = ratio >= 0.8 ? 3 : ratio >= 0.5 ? 2 : 1;
+  // 星级计算：总分百分比
+  const { stars } = calculateStars({
+    score,
+    pairCount: tileCount / 2,
+  });
 
   const handleNext = () => {
     navigate(`/game/${levelIndex + 2}`);

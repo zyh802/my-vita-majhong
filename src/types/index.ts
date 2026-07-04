@@ -77,6 +77,7 @@ export interface GameState {
   isTimerRunning: boolean;
   status: 'idle' | 'playing' | 'won' | 'lost' | 'paused';
   hintTileUid: string | null;
+  toolAssisted: boolean;  // 使用道具后的下一次匹配不加分
 }
 
 // 游戏动作
