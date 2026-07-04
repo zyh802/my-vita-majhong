@@ -71,12 +71,6 @@ export default function ResultPage() {
         </div>
 
         <div className={styles.statItem}>
-          <span className={styles.statIcon}>🎯</span>
-          <span className={styles.statValue}>{matches}</span>
-          <span className={styles.statLabel}>匹配</span>
-        </div>
-
-        <div className={styles.statItem}>
           <span className={styles.statIcon}>🔥</span>
           <span className={styles.statValue}>{maxCombo}</span>
           <span className={styles.statLabel}>最大连击</span>

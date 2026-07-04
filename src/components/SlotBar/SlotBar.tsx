@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import type { SlotTile } from '../../types';
-import { getTileType } from '../../constants/tiles';
+import { getTileType, getRank } from '../../constants/tiles';
+import TileFace from '../TileFace/TileFace';
 import styles from './SlotBar.module.css';
 
 interface SlotBarProps {
@@ -49,9 +50,9 @@ const SlotBarComponent: React.FC<SlotBarProps> = ({ slotTiles, slotCapacity }) =
             key={`slot-${slotTile.uid}`}
             className={`${styles.slotFilled} ${isMatching ? styles.slotMatching : ''}`}
           >
-            <span className={styles.slotTileText} style={{ color: tileType.color }}>
-              {tileType.display}
-            </span>
+            <div className={styles.slotTileText}>
+              <TileFace suit={tileType.suit} rank={getRank(tileType)} />
+            </div>
           </div>
         );
       })}

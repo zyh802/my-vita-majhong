@@ -49,13 +49,23 @@ export function isTileFree(tile: TileInstance, allTiles: TileInstance[]): boolea
 }
 
 /**
- * 重新计算所有牌的 isFree 状态
+ * 重新计算所有牌的 isFree 和 isCovered 状态
+ * - isCovered: 被上层牌覆盖（显示虚化）
+ * - isFree: 可以点击（未被覆盖且至少一侧空出）
  */
 export function recalculateFreeTiles(tiles: TileInstance[]): TileInstance[] {
-  return tiles.map((tile) => ({
-    ...tile,
-    isFree: isTileFree(tile, tiles),
-  }));
+  return tiles.map((tile) => {
+    if (tile.isRemoved) {
+      return { ...tile, isFree: false, isCovered: false };
+    }
+    const covered = isBlockedFromAbove(tile, tiles);
+    const sideBlocked = isBlockedFromSides(tile, tiles);
+    return {
+      ...tile,
+      isFree: !covered && !sideBlocked,
+      isCovered: covered,
+    };
+  });
 }
 
 /**

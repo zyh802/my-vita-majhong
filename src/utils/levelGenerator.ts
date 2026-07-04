@@ -50,6 +50,7 @@ export function generateLevel(layout: LevelLayout): TileInstance[] {
     layer: pos[2],
     isRemoved: false,
     isFree: false,
+    isCovered: false,
   }));
 
   // 计算初始自由状态

@@ -20,6 +20,7 @@ export interface TileInstance {
   layer: number;
   isRemoved: boolean;
   isFree: boolean;
+  isCovered: boolean;  // 被上层牌覆盖（虚化显示）
 }
 
 // 槽位中的牌

@@ -13,7 +13,7 @@ import styles from './GamePage.module.css';
 export default function GamePage() {
   const { levelId } = useParams<{ levelId: string }>();
   const navigate = useNavigate();
-  const { state, startLevel, pickTile, useHint, useShuffle, useUndo, tickTimer } = useGame();
+  const { state, startLevel, pickTile, useHint, useShuffle, useUndo, restartLevel, tickTimer } = useGame();
 
   const levelIndex = Number(levelId) - 1;
 
@@ -90,6 +90,9 @@ export default function GamePage() {
           />
         </div>
         <span className={styles.timer}>⏱ {formatTime(state.elapsedTime)}</span>
+        <button className={styles.restartBtn} onClick={restartLevel} title="重新开始">
+          ↻
+        </button>
       </div>
 
       {/* 棋盘 */}

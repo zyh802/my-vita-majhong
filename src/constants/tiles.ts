@@ -57,3 +57,14 @@ export function getTileType(id: string): TileType {
   }
   return tile;
 }
+
+const FENG_RANK: Record<string, number> = { dong: 1, nan: 2, xi: 3, bei: 4 };
+const JIAN_RANK: Record<string, number> = { zhong: 1, fa: 2, bai: 3 };
+
+/** 将 TileType 的 value 映射为 TileFace 需要的数字 rank */
+export function getRank(tile: TileType): number {
+  if (typeof tile.value === 'number') return tile.value;
+  if (tile.suit === 'feng') return FENG_RANK[tile.value] ?? 1;
+  if (tile.suit === 'jian') return JIAN_RANK[tile.value] ?? 1;
+  return 1;
+}
