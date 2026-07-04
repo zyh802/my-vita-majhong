@@ -13,15 +13,15 @@
   --color-danger: #e74c3c;
   --color-warning: #f39c12;
 
-  /* 牌面尺寸 */
-  --tile-width: 44px;
-  --tile-height: 56px;
+  /* 牌面尺寸 — 根据屏幕大小自适应 */
+  --tile-width: min(44px, 11vw, 7.5vh);
+  --tile-height: min(56px, 14vw, 9.5vh);
   --tile-gap: 2px;
   --tile-layer-offset: 4px;        /* 层级偏移 */
 
-  /* 槽位 */
-  --slot-width: 50px;
-  --slot-height: 64px;
+  /* 槽位 — 比牌面稍大 */
+  --slot-width: min(50px, 12.5vw, 8.5vh);
+  --slot-height: min(64px, 16vw, 10.8vh);
 
   /* 圆角 */
   --radius-sm: 4px;

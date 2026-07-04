@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadProgress, getMaxUnlockedLevel } from '../../utils/storage';
 import { LEVELS } from '../../constants/levels';
@@ -10,8 +11,20 @@ export default function HomePage() {
 
   const clearedCount = progress.filter((p) => p.completed).length;
 
+  // 首次进入自动跳转教学关
+  useEffect(() => {
+    const tutorialDone = localStorage.getItem('vita_mahjong_tutorial_done');
+    if (!tutorialDone) {
+      navigate('/tutorial/1', { replace: true });
+    }
+  }, [navigate]);
+
   const handleStart = () => {
     navigate(`/game/${maxUnlocked}`);
+  };
+
+  const handleTutorial = () => {
+    navigate('/tutorial/1');
   };
 
   const handleLevelSelect = (levelId: number) => {
@@ -65,6 +78,11 @@ export default function HomePage() {
           );
         })}
       </div>
+
+      {/* 重玩教学 */}
+      <button className={styles.tutorialBtn} onClick={handleTutorial}>
+        🎓 重玩教学
+      </button>
 
       {/* 底部装饰 */}
       <div className={styles.bottomDecor} />

@@ -48,10 +48,13 @@ export const TileBoard: React.FC<TileBoardProps> = ({ tiles, onTilePick, hintTil
       const containerWidth = container.clientWidth;
       const containerHeight = container.clientHeight;
 
-      // Get actual pixel size of tile CSS variables
-      const computedStyle = getComputedStyle(document.documentElement);
-      const tileWidth = parseFloat(computedStyle.getPropertyValue('--tile-width')) || 44;
-      const tileHeight = parseFloat(computedStyle.getPropertyValue('--tile-height')) || 58;
+      // Get actual computed pixel size of tile CSS variables (supports min()/clamp())
+      const probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;width:var(--tile-width);height:var(--tile-height)';
+      document.body.appendChild(probe);
+      const tileWidth = probe.offsetWidth || 44;
+      const tileHeight = probe.offsetHeight || 56;
+      document.body.removeChild(probe);
 
       const boardPixelWidth = boardWidth * tileWidth;
       const boardPixelHeight = boardHeight * tileHeight;

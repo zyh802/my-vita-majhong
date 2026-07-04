@@ -3,6 +3,7 @@ import { GameProvider } from './context/GameContext';
 import HomePage from './pages/HomePage/HomePage';
 import GamePage from './pages/GamePage/GamePage';
 import ResultPage from './pages/ResultPage/ResultPage';
+import TutorialPage from './pages/TutorialPage/TutorialPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/game/:levelId" element={<GamePage />} />
           <Route path="/result/:levelId" element={<ResultPage />} />
+          <Route path="/tutorial/:step" element={<TutorialPage />} />
         </Routes>
       </GameProvider>
     </BrowserRouter>

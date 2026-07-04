@@ -5,7 +5,8 @@ import { LEVELS } from '../../constants/levels';
 import { updateLevelProgress } from '../../utils/storage';
 import { calculateStars } from '../../utils/starRating';
 import { useTimer } from '../../hooks/useTimer';
-import { playPickSound, playMatchSound, playComboSound, playFailSound, playWinSound, playToolSound } from '../../utils/soundManager';
+import { playPickSound, playMatchSound, playComboSound, playFailSound, playWinSound, playToolSound, playInvalidSound } from '../../utils/soundManager';
+import { findHintTile } from '../../utils/gameLogic';
 import ScoreBar from '../../components/ScoreBar/ScoreBar';
 import TileBoard from '../../components/TileBoard/TileBoard';
 import SlotBar from '../../components/SlotBar/SlotBar';
@@ -20,6 +21,7 @@ export default function GamePage() {
   const { state, startLevel, pickTile, useHint, useShuffle, useUndo, restartLevel, tickTimer } = useGame();
 
   const [showLevelModal, setShowLevelModal] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
   const levelIndex = Number(levelId) - 1;
 
   // 音效 & 粒子状态追踪
@@ -67,11 +69,25 @@ export default function GamePage() {
     }
   }, [state.status]);
 
+  // 显示 toast
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2000);
+  }, []);
+
   // 包装道具使用，加入音效
   const handleHint = useCallback(() => {
-    if (state.hintRemaining > 0) playToolSound();
+    if (state.hintRemaining <= 0) return;
+    // 先检查是否有可提示的牌
+    const hint = findHintTile(state.tiles, state.slotTiles);
+    if (!hint) {
+      playInvalidSound();
+      showToast('没有可匹配的牌，试试洗牌吧！');
+      return;
+    }
+    playToolSound();
     useHint();
-  }, [useHint, state.hintRemaining]);
+  }, [useHint, state.hintRemaining, state.tiles, state.slotTiles, showToast]);
 
   const handleShuffle = useCallback(() => {
     if (state.shuffleRemaining > 0) playToolSound();
@@ -198,6 +214,11 @@ export default function GamePage() {
 
       {/* 关卡选择弹窗 */}
       <LevelModal visible={showLevelModal} onClose={() => setShowLevelModal(false)} />
+
+      {/* Toast 提示 */}
+      {toast && (
+        <div className={styles.toast}>{toast}</div>
+      )}
     </div>
   );
 }
