@@ -185,6 +185,31 @@ export function playWinSound(): void {
 }
 
 /**
+ * 不可选中音效 — 低沉短促的"咚"声
+ */
+export function playInvalidSound(): void {
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 200;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+  } catch {
+    // 静默失败
+  }
+}
+
+/**
  * 道具使用音效
  */
 export function playToolSound(): void {

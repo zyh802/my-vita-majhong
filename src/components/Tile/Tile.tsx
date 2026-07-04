@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react';
 import type { TileInstance } from '../../types';
 import { getTileType, getRank } from '../../constants/tiles';
+import { playInvalidSound } from '../../utils/soundManager';
 import TileFace from '../TileFace/TileFace';
 import styles from './Tile.module.css';
 
@@ -32,6 +33,7 @@ const TileComponent: React.FC<TileProps> = ({ tile, onClick, isHinted = false })
       onClick(tile);
     } else if (!tile.isCovered && !shaking) {
       // 仅侧面被挡的牌才抖动提示，被压住的牌不响应
+      playInvalidSound();
       setShaking(true);
       setTimeout(() => setShaking(false), 400);
     }
