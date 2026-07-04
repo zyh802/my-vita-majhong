@@ -86,9 +86,9 @@
   90% { transform: translateX(1px); }
 }
 
-/* 消除动画 */
+/* 消除动画 — 放大 + 金光爆发 + 缩小消失 */
 .tileRemoving {
-  animation: tileRemove 0.3s ease-out forwards;
+  animation: tileRemove 0.45s ease-out forwards;
   pointer-events: none;
 }
 
@@ -96,13 +96,30 @@
   0% {
     transform: scale(1);
     opacity: 1;
+    filter: brightness(1);
+    box-shadow: 0 2px 4px rgba(139, 90, 43, 0.3);
   }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.8;
+  30% {
+    transform: scale(1.3);
+    opacity: 1;
+    filter: brightness(1.8);
+    box-shadow:
+      0 0 20px rgba(255, 215, 0, 0.9),
+      0 0 40px rgba(255, 165, 0, 0.5),
+      inset 0 0 15px rgba(255, 255, 255, 0.8);
+  }
+  60% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.6;
+    filter: brightness(1.4);
+    box-shadow:
+      0 0 30px rgba(255, 215, 0, 0.6),
+      0 0 60px rgba(255, 100, 0, 0.3);
   }
   100% {
-    transform: scale(0);
+    transform: scale(0) rotate(15deg);
     opacity: 0;
+    filter: brightness(2);
+    box-shadow: 0 0 0 transparent;
   }
 }

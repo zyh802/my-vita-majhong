@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import { LEVELS } from '../../constants/levels';
 import { updateLevelProgress } from '../../utils/storage';
 import { calculateStars } from '../../utils/starRating';
 import { useTimer } from '../../hooks/useTimer';
+import { playPickSound, playMatchSound, playComboSound, playFailSound, playWinSound, playToolSound } from '../../utils/soundManager';
 import ScoreBar from '../../components/ScoreBar/ScoreBar';
 import TileBoard from '../../components/TileBoard/TileBoard';
 import SlotBar from '../../components/SlotBar/SlotBar';
 import ToolBar from '../../components/ToolBar/ToolBar';
 import LevelModal from '../../components/LevelModal/LevelModal';
+import ParticleEffect from '../../components/ParticleEffect/ParticleEffect';
 import styles from './GamePage.module.css';
 
 export default function GamePage() {
@@ -19,6 +21,67 @@ export default function GamePage() {
 
   const [showLevelModal, setShowLevelModal] = useState(false);
   const levelIndex = Number(levelId) - 1;
+
+  // 音效 & 粒子状态追踪
+  const prevMatchCountRef = useRef(0);
+  const prevSlotLenRef = useRef(0);
+  const prevStatusRef = useRef(state.status);
+  const [particleTrigger, setParticleTrigger] = useState(0);
+  const [particlePos, setParticlePos] = useState({ x: 0, y: 0 });
+  const boardAreaRef = useRef<HTMLDivElement>(null);
+
+  // 监听选牌（slotTiles 变长 = 入槽）和消除（matchCount 增加）
+  useEffect(() => {
+    // 匹配成功
+    if (state.matchCount > prevMatchCountRef.current && prevMatchCountRef.current >= 0) {
+      playMatchSound();
+      // 连击音效
+      if (state.comboCount > 1) {
+        setTimeout(() => playComboSound(state.comboCount), 80);
+      }
+      // 触发粒子特效（在槽位区域中央爆发）
+      if (boardAreaRef.current) {
+        const rect = boardAreaRef.current.getBoundingClientRect();
+        setParticlePos({ x: rect.width / 2, y: rect.height - 40 });
+        setParticleTrigger(prev => prev + 1);
+      }
+    }
+    // 选牌入槽（未匹配，槽位变多了）
+    else if (state.slotTiles.length > prevSlotLenRef.current && state.status === 'playing') {
+      playPickSound();
+    }
+
+    prevMatchCountRef.current = state.matchCount;
+    prevSlotLenRef.current = state.slotTiles.length;
+  }, [state.matchCount, state.slotTiles.length, state.comboCount, state.status]);
+
+  // 监听游戏状态变化（胜利/失败音效）
+  useEffect(() => {
+    if (state.status !== prevStatusRef.current) {
+      if (state.status === 'won') {
+        playWinSound();
+      } else if (state.status === 'lost') {
+        playFailSound();
+      }
+      prevStatusRef.current = state.status;
+    }
+  }, [state.status]);
+
+  // 包装道具使用，加入音效
+  const handleHint = useCallback(() => {
+    if (state.hintRemaining > 0) playToolSound();
+    useHint();
+  }, [useHint, state.hintRemaining]);
+
+  const handleShuffle = useCallback(() => {
+    if (state.shuffleRemaining > 0) playToolSound();
+    useShuffle();
+  }, [useShuffle, state.shuffleRemaining]);
+
+  const handleUndo = useCallback(() => {
+    if (state.undoRemaining > 0) playToolSound();
+    useUndo();
+  }, [useUndo, state.undoRemaining]);
 
   // 格式化时间
   const formatTime = (seconds: number): string => {
@@ -106,11 +169,17 @@ export default function GamePage() {
       </div>
 
       {/* 棋盘 */}
-      <div className={styles.boardArea}>
+      <div className={styles.boardArea} ref={boardAreaRef}>
         <TileBoard
           tiles={state.tiles}
           hintTileUid={state.hintTileUid}
           onTilePick={pickTile}
+        />
+        <ParticleEffect
+          x={particlePos.x}
+          y={particlePos.y}
+          triggerKey={particleTrigger}
+          count={16}
         />
       </div>
 
@@ -121,9 +190,9 @@ export default function GamePage() {
           hintCount={state.hintRemaining}
           shuffleCount={state.shuffleRemaining}
           undoCount={state.undoRemaining}
-          onHint={useHint}
-          onShuffle={useShuffle}
-          onUndo={useUndo}
+          onHint={handleHint}
+          onShuffle={handleShuffle}
+          onUndo={handleUndo}
         />
       </div>
 

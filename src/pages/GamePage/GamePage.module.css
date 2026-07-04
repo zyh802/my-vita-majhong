@@ -111,6 +111,7 @@
   overflow: hidden;
   padding: 8px;
   min-height: 0;
+  position: relative;
 }
 
 /* 底部区域 */
